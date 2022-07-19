@@ -7,6 +7,5 @@ import java.util.Optional;
 
 public interface AccountHolderRepository extends JpaRepository<AccountHolder, Long> {
 
-    Optional<AccountHolder> getAccountHolderByPESEL_number(String PESEL_number);
-
+    Optional<AccountHolder> getAccountHolderByPESELNumber(String PESEL_number);
 }

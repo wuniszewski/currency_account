@@ -1,4 +1,4 @@
-package com.wuniszewski.currencyaccount.recruitment_task.integration.nbp;
+package com.wuniszewski.currencyaccount.recruitment_task.integration.nbp.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,5 +15,5 @@ public class NBPBuySellRecordDTO {
 
     private String code;
 
-    private Set<RateDTO> rates;
+    private Set<NBPRateDTO> rates;
 }

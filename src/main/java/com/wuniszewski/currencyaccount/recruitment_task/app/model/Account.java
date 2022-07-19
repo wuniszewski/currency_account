@@ -1,6 +1,6 @@
 package com.wuniszewski.currencyaccount.recruitment_task.app.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wuniszewski.currencyaccount.recruitment_task.app.exception.OperationNotAllowedException;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -48,6 +48,12 @@ public class Account {
 
     public Set<SubAccount> getSubAccounts() {
         return subAccounts;
+    }
+
+    public SubAccount getSubAccount(Currency currency) {
+        return subAccounts.stream()
+                .filter(subAccount -> currency.equals(subAccount.getCurrency()))
+                .findFirst().orElseThrow(() -> new OperationNotAllowedException(String.format("Sub-account in {%s} doesn't exist.", currency)));
     }
 
     public void addSubAccount(SubAccount subAccount) {

@@ -26,29 +26,29 @@ public class AccountHolderService {
         this.accountHolderRepository = accountHolderRepository;
     }
 
-    public AccountHolder createAccountHolder(final String firstName, final String lastName, final String PESEL_number) {
-        validatePESELNumber(PESEL_number);
-        validateIfCandidateIsUnderage(PESEL_number);
-        validateIfAccountAlreadyExists(PESEL_number);
-        return accountHolderRepository.save(new AccountHolder(firstName, lastName, PESEL_number));
+    public AccountHolder createAccountHolder(final String firstName, final String lastName, final String PESELNumber) {
+        validatePESELNumber(PESELNumber);
+        validateIfCandidateIsUnderage(PESELNumber);
+        validateIfAccountAlreadyExists(PESELNumber);
+        return accountHolderRepository.save(new AccountHolder(firstName, lastName, PESELNumber));
     }
 
-    private void validatePESELNumber(String PESEL_number) {
-        int charCount = PESEL_number.trim().length();
+    private void validatePESELNumber(String PESELNumber) {
+        int charCount = PESELNumber.trim().length();
         if (charCount != PESEL_NUMBER_LENGTH) {
             throw new PESELNumberFormatInvalidException("Wrong number of characters in a PESEL number.");
         }
         try {
-            Long.valueOf(PESEL_number);
+            Long.valueOf(PESELNumber);
         } catch (NumberFormatException e) {
             throw new PESELNumberFormatInvalidException("PESEL number is not a valid number. It must contain only digits.", e);
         }
     }
 
-    private void validateIfCandidateIsUnderage(String PESEL_number) {
-        int yearOfBirth = extractCorrectYear(PESEL_number);
-        int monthOfBirth = Integer.parseInt(PESEL_number.substring(2, 4));
-        int dayOfBirth = Integer.parseInt(PESEL_number.substring(4, 6));
+    private void validateIfCandidateIsUnderage(String PESELNumber) {
+        int yearOfBirth = extractCorrectYear(PESELNumber);
+        int monthOfBirth = Integer.parseInt(PESELNumber.substring(2, 4));
+        int dayOfBirth = Integer.parseInt(PESELNumber.substring(4, 6));
         LocalDate dateOfBirth = LocalDate.of(yearOfBirth, monthOfBirth, dayOfBirth);
         Period currentAge = Period.between(dateOfBirth, LocalDate.now());
         if (currentAge.getYears() < LEGAL_AGE_LIMIT) {
@@ -56,15 +56,15 @@ public class AccountHolderService {
         }
     }
 
-    private void validateIfAccountAlreadyExists(String PESEL_number) {
-        Optional<AccountHolder> accountHolder = accountHolderRepository.getAccountHolderByPESEL_number(PESEL_number);
+    private void validateIfAccountAlreadyExists(String PESELNumber) {
+        Optional<AccountHolder> accountHolder = accountHolderRepository.getAccountHolderByPESELNumber(PESELNumber);
         if (accountHolder.isPresent()) {
             throw new AccountHolderAlreadyExistsException("Account holder already exists.");
         }
     }
 
-    private int extractCorrectYear(String PESEL_number) {
-        String yearDigitsFromPESEL = PESEL_number.substring(0, 2);
+    private int extractCorrectYear(String PESELNumber) {
+        String yearDigitsFromPESEL = PESELNumber.substring(0, 2);
         int lastTwoYearDigits = Integer.parseInt(yearDigitsFromPESEL);
         if (lastTwoYearDigits <= extractLastTwoYearDigitsFromCurrentYear()) {
             return Integer.parseInt("20" + yearDigitsFromPESEL);

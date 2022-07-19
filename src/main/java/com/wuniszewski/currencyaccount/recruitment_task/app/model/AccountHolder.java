@@ -1,7 +1,5 @@
 package com.wuniszewski.currencyaccount.recruitment_task.app.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -20,15 +18,15 @@ public class AccountHolder {
     private String lastName;
 
     @Column(name = "PESEL_number")
-    private String PESEL_number;
+    private String PESELNumber;
 
     public AccountHolder() {
     }
 
-    public AccountHolder(String firstName, String lastName, String PESEL_number) {
+    public AccountHolder(String firstName, String lastName, String PESELNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.PESEL_number = PESEL_number;
+        this.PESELNumber = PESELNumber;
     }
 
     public Long getId() {
@@ -51,8 +49,8 @@ public class AccountHolder {
         this.lastName = lastName;
     }
 
-    public String getPESEL_number() {
-        return PESEL_number;
+    public String getPESELNumber() {
+        return PESELNumber;
     }
 
     @Override
@@ -60,11 +58,11 @@ public class AccountHolder {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AccountHolder that = (AccountHolder) o;
-        return Objects.equals(id, that.id) && PESEL_number.equals(that.PESEL_number);
+        return Objects.equals(id, that.id) && PESELNumber.equals(that.PESELNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, PESEL_number);
+        return Objects.hash(id, PESELNumber);
     }
 }

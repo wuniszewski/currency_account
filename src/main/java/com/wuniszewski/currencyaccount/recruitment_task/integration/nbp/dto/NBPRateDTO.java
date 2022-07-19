@@ -1,4 +1,4 @@
-package com.wuniszewski.currencyaccount.recruitment_task.integration.nbp;
+package com.wuniszewski.currencyaccount.recruitment_task.integration.nbp.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class RateDTO {
+public class NBPRateDTO {
 
     private String no;
 

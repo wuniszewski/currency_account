@@ -1,6 +1,7 @@
-package com.wuniszewski.currencyaccount.recruitment_task.integration.nbp;
+package com.wuniszewski.currencyaccount.recruitment_task.integration.nbp.service;
 
 import com.wuniszewski.currencyaccount.recruitment_task.app.model.Currency;
+import com.wuniszewski.currencyaccount.recruitment_task.integration.nbp.dto.NBPBuySellRecordDTO;
 import com.wuniszewski.currencyaccount.recruitment_task.integration.nbp.exception.NBPServiceUnavailableException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -10,7 +11,6 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.Optional;
 
 @Service
 public class NBPIntegrationService {
@@ -47,7 +47,6 @@ public class NBPIntegrationService {
         verifyResponseExists(responseEntity);
         return responseEntity;
     }
-
 
 
     private void verifyResponseExists(ResponseEntity<NBPBuySellRecordDTO> responseEntity) {

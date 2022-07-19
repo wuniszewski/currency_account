@@ -15,6 +15,4 @@ public class SubAccountDTO {
     private Currency currency;
 
     private BigDecimal balance;
-
-
 }

@@ -1,8 +1,6 @@
 package com.wuniszewski.currencyaccount.recruitment_task.app.controller;
 
-import com.wuniszewski.currencyaccount.recruitment_task.app.exception.AccountHolderAlreadyExistsException;
-import com.wuniszewski.currencyaccount.recruitment_task.app.exception.PESELNumberFormatInvalidException;
-import com.wuniszewski.currencyaccount.recruitment_task.app.exception.UnderageAccountHolderCandidateException;
+import com.wuniszewski.currencyaccount.recruitment_task.app.exception.*;
 import com.wuniszewski.currencyaccount.recruitment_task.integration.nbp.exception.NBPServiceUnavailableException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -42,5 +40,19 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     protected ResponseEntity<Object> handleUnavailableNBPApi(RuntimeException exception, WebRequest request) {
         final String exceptionMessage = exception.getMessage();
         return handleExceptionInternal(exception, exceptionMessage, new HttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE, request);
+    }
+
+    @ExceptionHandler(AccountDoesNotExistException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ResponseEntity<Object> handleNonExistingAccount(RuntimeException exception, WebRequest request) {
+        final String exceptionMessage = exception.getMessage();
+        return handleExceptionInternal(exception, exceptionMessage, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(OperationNotAllowedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ResponseEntity<Object> handleNotAllowedOperation(RuntimeException exception, WebRequest request) {
+        final String exceptionMessage = exception.getMessage();
+        return handleExceptionInternal(exception, exceptionMessage, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 }

@@ -1,8 +1,5 @@
 package com.wuniszewski.currencyaccount.recruitment_task.app.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.yaml.snakeyaml.events.Event;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -13,7 +10,6 @@ public class SubAccount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Long id;
 
     private Currency currency;
@@ -53,11 +49,11 @@ public class SubAccount {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SubAccount that = (SubAccount) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(id, that.id) && currency == that.currency;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, currency);
     }
 }

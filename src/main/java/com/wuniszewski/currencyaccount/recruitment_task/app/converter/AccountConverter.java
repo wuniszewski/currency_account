@@ -16,7 +16,6 @@ public class AccountConverter implements DTOConverter<AccountDTO, Account> {
         this.modelMapper = modelMapper;
     }
 
-
     @Override
     public AccountDTO convertToDTO(Account entityToConvert) {
         return modelMapper.map(entityToConvert, AccountDTO.class);

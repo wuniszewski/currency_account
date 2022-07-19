@@ -17,5 +17,5 @@ public class AccountHolderDTO {
     private String lastName;
 
     @JsonProperty("PESEL_number")
-    private String PESEL_number;
+    private String PESELNumber;
 }
