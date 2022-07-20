@@ -2,6 +2,7 @@ package com.wuniszewski.currencyaccount.recruitment_task.app.service;
 
 import com.wuniszewski.currencyaccount.recruitment_task.app.model.Account;
 import com.wuniszewski.currencyaccount.recruitment_task.app.model.Currency;
+import com.wuniszewski.currencyaccount.recruitment_task.app.model.ExchangeMode;
 import com.wuniszewski.currencyaccount.recruitment_task.app.model.SubAccount;
 import com.wuniszewski.currencyaccount.recruitment_task.integration.nbp.service.NBPIntegrationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class BuyExchangeStrategyPLNRelated implements NBPExchangeStrategy {
         SubAccount polishSubAccount = account.getSubAccount(baseCurrency);
         validateBalanceCapacity(amountInBaseCurrency, polishSubAccount);
 
-        BigDecimal rate = getRate(nbpIntegrationService, targetCurrency);
+        BigDecimal rate = getRate(nbpIntegrationService, targetCurrency, ExchangeMode.BUY);
         BigDecimal amountOfTargetCurrencyToAdd = amountInBaseCurrency.divide(rate, MathContext.DECIMAL128);
 
 

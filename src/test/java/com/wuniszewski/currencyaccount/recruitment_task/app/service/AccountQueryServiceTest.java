@@ -24,12 +24,11 @@ class AccountQueryServiceTest {
     private AccountQueryService queryService;
 
     @Test
-    public void getBalance_shouldThrowAccountDoesNotExistExcWhenNoAccount () {
+    public void getBalance_shouldThrowAccountDoesNotExistExcWhenNoAccount() {
         //when
         when(accountRepository.getAccountByPESELNumber(anyString())).thenReturn(Optional.empty());
 
         //then
         assertThrows(AccountDoesNotExistException.class, () -> queryService.getBalance("00010100000"));
     }
-
 }

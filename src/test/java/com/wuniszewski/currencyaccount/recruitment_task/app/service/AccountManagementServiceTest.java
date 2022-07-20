@@ -122,4 +122,14 @@ class AccountManagementServiceTest {
         assertThrows(AccountDoesNotExistException.class, () ->
                 accountManagementService.exchangeCurrency("00010100000", BigDecimal.TEN, Currency.PLN, Currency.USD, exchangeStrategy));
     }
+
+    @Test
+    public void exchange_shouldThrowOperationNotAllowedExcWhenGivenSameCurrenciesToExchange() {
+        //given
+        //when
+
+        //then
+        assertThrows(OperationNotAllowedException.class, () ->
+                accountManagementService.exchangeCurrency("00010100000", BigDecimal.TEN, Currency.PLN, Currency.PLN, exchangeStrategy));
+    }
 }

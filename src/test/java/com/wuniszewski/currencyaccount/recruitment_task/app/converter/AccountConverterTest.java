@@ -74,5 +74,4 @@ class AccountConverterTest {
         //then
         assertThrows(IllegalArgumentException.class, () -> accountConverter.convertToDTO(null));
     }
-
 }

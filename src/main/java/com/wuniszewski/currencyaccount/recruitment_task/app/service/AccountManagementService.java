@@ -46,6 +46,7 @@ public class AccountManagementService {
                                                        Currency baseCurrency,
                                                        Currency targetCurrency,
                                                        ExchangeStrategy exchangeStrategy) {
+        verifyIfIdenticalCurrencies(baseCurrency, targetCurrency);
         Optional<Account> accountOpt = accountRepository.getAccountByPESELNumber(PESELNumber);
         if (accountOpt.isEmpty()) {
             throw new AccountDoesNotExistException("Account with given PESEL number doesn't exist.");
@@ -59,6 +60,12 @@ public class AccountManagementService {
         if (initialBalance.compareTo(BigDecimal.ZERO) == -1) {
             accountHolderService.delete(createdAccountHolder);
             throw new OperationNotAllowedException("Cannot create and account with negative balance.");
+        }
+    }
+
+    private void verifyIfIdenticalCurrencies(Currency baseCurrency, Currency targetCurrency) {
+        if (baseCurrency.equals(targetCurrency)) {
+            throw new OperationNotAllowedException("Exchange between the same currencies is not allowed.");
         }
     }
 }

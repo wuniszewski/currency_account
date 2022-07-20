@@ -5,13 +5,14 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 class AccountTest {
 
     @Test
-    public void shouldCreateTwoSubAccountsDuringCreation () {
+    public void shouldCreateTwoSubAccountsDuringCreation() {
         //given
         AccountHolder testAccountHolder = new AccountHolder("John", "Smith", "00010100000");
         BigDecimal initialPLNBalance = BigDecimal.ZERO;
@@ -26,7 +27,7 @@ class AccountTest {
     }
 
     @Test
-    public void getSubAccount_shouldThrowOperationNotAllowedExceptionWhenSubAccountMissing () {
+    public void getSubAccount_shouldThrowOperationNotAllowedExceptionWhenSubAccountMissing() {
         //given
         AccountHolder testAccountHolder = new AccountHolder("John", "Smith", "00010100000");
         Account createdAccount = new Account(testAccountHolder, BigDecimal.ZERO);

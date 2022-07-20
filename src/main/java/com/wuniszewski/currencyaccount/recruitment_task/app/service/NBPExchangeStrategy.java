@@ -2,9 +2,9 @@ package com.wuniszewski.currencyaccount.recruitment_task.app.service;
 
 import com.wuniszewski.currencyaccount.recruitment_task.app.exception.OperationNotAllowedException;
 import com.wuniszewski.currencyaccount.recruitment_task.app.model.Currency;
+import com.wuniszewski.currencyaccount.recruitment_task.app.model.ExchangeMode;
 import com.wuniszewski.currencyaccount.recruitment_task.app.model.SubAccount;
 import com.wuniszewski.currencyaccount.recruitment_task.integration.nbp.dto.NBPBuySellRecordDTO;
-import com.wuniszewski.currencyaccount.recruitment_task.integration.nbp.dto.NBPRateDTO;
 import com.wuniszewski.currencyaccount.recruitment_task.integration.nbp.exception.NBPServiceUnavailableException;
 import com.wuniszewski.currencyaccount.recruitment_task.integration.nbp.service.NBPIntegrationService;
 
@@ -13,10 +13,16 @@ import java.util.Optional;
 
 public interface NBPExchangeStrategy extends ExchangeStrategy {
 
-    default BigDecimal getRate(NBPIntegrationService integrationService, Currency desiredRateCurrency) {
+    default BigDecimal getRate(NBPIntegrationService integrationService, Currency desiredRateCurrency, ExchangeMode exchangeMode) {
         NBPBuySellRecordDTO buySellRates = integrationService.getBuySellRates(desiredRateCurrency);
         Optional<BigDecimal> rateOpt = buySellRates.getRates().stream()
-                .map(NBPRateDTO::getAsk)
+                .map(nbpRateDTO -> {
+                    if (ExchangeMode.BUY.equals(exchangeMode)) {
+                        return nbpRateDTO.getAsk();
+                    } else {
+                        return nbpRateDTO.getBid();
+                    }
+                })
                 .findFirst();
         if (rateOpt.isEmpty()) {
             throw new NBPServiceUnavailableException("No rates found in the API response.");
