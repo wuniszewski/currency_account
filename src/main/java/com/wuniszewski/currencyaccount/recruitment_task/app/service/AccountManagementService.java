@@ -8,6 +8,7 @@ import com.wuniszewski.currencyaccount.recruitment_task.app.model.Account;
 import com.wuniszewski.currencyaccount.recruitment_task.app.model.AccountHolder;
 import com.wuniszewski.currencyaccount.recruitment_task.app.model.Currency;
 import com.wuniszewski.currencyaccount.recruitment_task.app.repository.AccountRepository;
+import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +17,12 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import static org.jboss.logging.Logger.Level.DEBUG;
+
 @Service
 public class AccountManagementService {
+
+    private final Logger LOGGER = Logger.getLogger(AccountManagementService.class.getName());
 
     private final AccountHolderService accountHolderService;
 
@@ -38,6 +43,7 @@ public class AccountManagementService {
         verifyInitialBalance(accountHolder, initialBalance);
         Account newAccount = new Account(accountHolder, initialBalance);
         accountRepository.save(newAccount);
+        LOGGER.log(DEBUG, String.format("Account with PESEL number: '%s' has been created.", PESELNumber));
         return new ResponseEntity<>("Account has been created", HttpStatus.CREATED);
     }
 
@@ -53,6 +59,8 @@ public class AccountManagementService {
         }
         Account account = accountOpt.get();
         exchangeStrategy.exchangeCurrencyInAccount(account, amountInBaseCurrency, baseCurrency, targetCurrency);
+        LOGGER.log(DEBUG, String.format("Exchanged money in account with PESELNumber= '%s'. Amount: '%s'. '%s' -> '%s'",
+                PESELNumber, amountInBaseCurrency, baseCurrency, targetCurrency));
         return ResponseEntity.ok(accountConverter.convertToDTO(accountRepository.save(account)));
     }
 

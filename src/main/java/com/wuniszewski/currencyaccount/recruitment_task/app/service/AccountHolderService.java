@@ -5,6 +5,7 @@ import com.wuniszewski.currencyaccount.recruitment_task.app.exception.PESELNumbe
 import com.wuniszewski.currencyaccount.recruitment_task.app.exception.UnderageAccountHolderCandidateException;
 import com.wuniszewski.currencyaccount.recruitment_task.app.model.AccountHolder;
 import com.wuniszewski.currencyaccount.recruitment_task.app.repository.AccountHolderRepository;
+import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +13,12 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.Optional;
 
+import static org.jboss.logging.Logger.Level.DEBUG;
+
 @Service
 public class AccountHolderService {
+
+    private final Logger LOGGER = Logger.getLogger(AccountHolderService.class.getName());
 
     private final int PESEL_NUMBER_LENGTH = 11;
 
@@ -32,11 +37,14 @@ public class AccountHolderService {
         validatePESELNumber(PESELNumber);
         validateIfCandidateIsUnderage(PESELNumber);
         validateIfAccountAlreadyExists(PESELNumber);
-        return accountHolderRepository.save(new AccountHolder(firstName, lastName, PESELNumber));
+        AccountHolder createdAccountHolder = accountHolderRepository.save(new AccountHolder(firstName, lastName, PESELNumber));
+        LOGGER.log(DEBUG, String.format("Account with PESEL number: '%s' has been created.", createdAccountHolder.getPESELNumber()));
+        return createdAccountHolder;
     }
 
     public void delete(AccountHolder accountHolder) {
         accountHolderRepository.delete(accountHolder);
+        LOGGER.log(DEBUG, String.format("Account with PESEL number: '%s' has been deleted.", accountHolder.getPESELNumber()));
     }
 
     private void validatePESELNumber(String PESELNumber) {
