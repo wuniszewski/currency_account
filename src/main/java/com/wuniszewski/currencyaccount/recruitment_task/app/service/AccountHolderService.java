@@ -19,6 +19,8 @@ public class AccountHolderService {
 
     private final int LEGAL_AGE_LIMIT = 18;
 
+    private final int MONTH_DIGITS_ADDITION_IN_PESEL_WHEN_BORN_AFTER_2000s = 20;
+
     private final AccountHolderRepository accountHolderRepository;
 
     @Autowired
@@ -26,11 +28,15 @@ public class AccountHolderService {
         this.accountHolderRepository = accountHolderRepository;
     }
 
-    public AccountHolder createAccountHolder(final String firstName, final String lastName, final String PESELNumber) {
+    public AccountHolder create(final String firstName, final String lastName, final String PESELNumber) {
         validatePESELNumber(PESELNumber);
         validateIfCandidateIsUnderage(PESELNumber);
         validateIfAccountAlreadyExists(PESELNumber);
         return accountHolderRepository.save(new AccountHolder(firstName, lastName, PESELNumber));
+    }
+
+    public void delete(AccountHolder accountHolder) {
+        accountHolderRepository.delete(accountHolder);
     }
 
     private void validatePESELNumber(String PESELNumber) {
@@ -41,13 +47,13 @@ public class AccountHolderService {
         try {
             Long.valueOf(PESELNumber);
         } catch (NumberFormatException e) {
-            throw new PESELNumberFormatInvalidException("PESEL number is not a valid number. It must contain only digits.", e);
+            throw new PESELNumberFormatInvalidException("PESEL number is not a number. It must contain only digits.", e);
         }
     }
 
     private void validateIfCandidateIsUnderage(String PESELNumber) {
         int yearOfBirth = extractCorrectYear(PESELNumber);
-        int monthOfBirth = Integer.parseInt(PESELNumber.substring(2, 4));
+        int monthOfBirth = extractCorrectMonth(PESELNumber);
         int dayOfBirth = Integer.parseInt(PESELNumber.substring(4, 6));
         LocalDate dateOfBirth = LocalDate.of(yearOfBirth, monthOfBirth, dayOfBirth);
         Period currentAge = Period.between(dateOfBirth, LocalDate.now());
@@ -65,16 +71,19 @@ public class AccountHolderService {
 
     private int extractCorrectYear(String PESELNumber) {
         String yearDigitsFromPESEL = PESELNumber.substring(0, 2);
-        int lastTwoYearDigits = Integer.parseInt(yearDigitsFromPESEL);
-        if (lastTwoYearDigits <= extractLastTwoYearDigitsFromCurrentYear()) {
+        String monthDigitsFromPESEL = PESELNumber.substring(2, 4);
+        int month = Integer.parseInt(monthDigitsFromPESEL);
+        if (month > MONTH_DIGITS_ADDITION_IN_PESEL_WHEN_BORN_AFTER_2000s) {
             return Integer.parseInt("20" + yearDigitsFromPESEL);
-        } else {
-            return Integer.parseInt("19" + lastTwoYearDigits);
         }
+        return Integer.parseInt("19" + yearDigitsFromPESEL);
     }
 
-    private long extractLastTwoYearDigitsFromCurrentYear() {
-        String currentYear = String.valueOf(LocalDate.now().getYear());
-        return Long.parseLong(currentYear.substring(0, 2));
+    private int extractCorrectMonth(String PESELNumber) {
+        int monthDigits = Integer.parseInt(PESELNumber.substring(2, 4));
+        if (monthDigits > MONTH_DIGITS_ADDITION_IN_PESEL_WHEN_BORN_AFTER_2000s) {
+            return monthDigits - 20;
+        }
+        return monthDigits;
     }
 }

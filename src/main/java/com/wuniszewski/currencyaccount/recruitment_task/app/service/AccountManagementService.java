@@ -3,6 +3,7 @@ package com.wuniszewski.currencyaccount.recruitment_task.app.service;
 import com.wuniszewski.currencyaccount.recruitment_task.app.converter.DTOConverter;
 import com.wuniszewski.currencyaccount.recruitment_task.app.dto.AccountDTO;
 import com.wuniszewski.currencyaccount.recruitment_task.app.exception.AccountDoesNotExistException;
+import com.wuniszewski.currencyaccount.recruitment_task.app.exception.OperationNotAllowedException;
 import com.wuniszewski.currencyaccount.recruitment_task.app.model.Account;
 import com.wuniszewski.currencyaccount.recruitment_task.app.model.AccountHolder;
 import com.wuniszewski.currencyaccount.recruitment_task.app.model.Currency;
@@ -33,7 +34,8 @@ public class AccountManagementService {
     }
 
     public ResponseEntity create(String firstName, String lastName, String PESELNumber, BigDecimal initialBalance) {
-        AccountHolder accountHolder = accountHolderService.createAccountHolder(firstName, lastName, PESELNumber);
+        AccountHolder accountHolder = accountHolderService.create(firstName, lastName, PESELNumber);
+        verifyInitialBalance(accountHolder, initialBalance);
         Account newAccount = new Account(accountHolder, initialBalance);
         accountRepository.save(newAccount);
         return new ResponseEntity<>("Account has been created", HttpStatus.CREATED);
@@ -51,5 +53,12 @@ public class AccountManagementService {
         Account account = accountOpt.get();
         exchangeStrategy.exchangeCurrencyInAccount(account, amountInBaseCurrency, baseCurrency, targetCurrency);
         return ResponseEntity.ok(accountConverter.convertToDTO(accountRepository.save(account)));
+    }
+
+    private void verifyInitialBalance(AccountHolder createdAccountHolder, BigDecimal initialBalance) {
+        if (initialBalance.compareTo(BigDecimal.ZERO) == -1) {
+            accountHolderService.delete(createdAccountHolder);
+            throw new OperationNotAllowedException("Cannot create and account with negative balance.");
+        }
     }
 }
